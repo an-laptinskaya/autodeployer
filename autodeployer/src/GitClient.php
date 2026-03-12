@@ -75,6 +75,11 @@ class GitClient
         return $this->run("git pull origin " . escapeshellarg($branch));
     }
 
+    public function push(string $branch): array
+    {
+        return $this->run("git push origin " . escapeshellarg($branch));
+    }
+
     /**
      * Жесткий сброс всех некоммиченных локальных изменений.
      * Возвращает файлы к состоянию последнего успешного коммита.
@@ -97,10 +102,10 @@ class GitClient
     /**
      * Разрешает конфликты в пользу кода с сервера
      */
-    public function resolveConflicts(): array
+    public function resolveConflicts(string $branch): array
     {
         // Выбираем код сервера
-        $this->run('git checkout --theirs .');
+        $this->run('git checkout ' . escapeshellarg($branch) . ' --theirs .');
         // Завершаем слияние
         return $this->run('git commit -am "Auto-commit: Remote Conflict Resolved"');
     }
