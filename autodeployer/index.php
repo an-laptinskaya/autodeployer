@@ -27,7 +27,7 @@ var_dump($git->getRemoteBranches());
 $userConfig = $git->setGitUserConfig();
 var_dump($userConfig);
 
-var_dump($db->updateEnvironmentBranch(1, 'master'));
+var_dump($db->updateEnvironmentBranch(1, 'test'));
 var_dump($dep->deploy(1));
 
 //$git->checkout('master');
