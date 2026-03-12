@@ -116,4 +116,16 @@ class GitClient
         $this->run('git config --global user.name "autodeployer"');
         return $this->run('git config --global --list');
     }
+
+    public function getBranchCommits($branch)
+    {
+        $res = $this->run("git log $branch  --pretty=format:\"%h - %an, %ar : %s\" -5");
+        if (!$res['success']) return [];
+
+        $commits = [];
+        foreach (explode("\n", $res['output']) as $line) {
+            $commits[] = trim($line);
+        }
+        return array_unique($commits);
+    }
 }
