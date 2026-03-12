@@ -109,4 +109,11 @@ class GitClient
         // Завершаем слияние
         return $this->run('git commit -am "Auto-commit: Remote Conflict Resolved"');
     }
+
+    public function setGitUserConfig()
+    {
+        $this->run('git config --global user.email "autodeployer@gmail.com"');
+        $this->run('git config --global user.name "autodeployer"');
+        return $this->run('git config --global --list');
+    }
 }

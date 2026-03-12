@@ -37,6 +37,10 @@ class DeployRunner
         // Инициализируем GitClient ИМЕННО для папки этой площадки
         $git = new GitClient($targetPath);
 
+        $log[] = "Устанавливаем пользователя";
+        $userConfig = $git->setGitUserConfig();
+        $log[] = $userConfig['output'];
+
         // Стягиваем информацию об изменениях с сервера
         $log[] = "[GIT] git fetch --all...";
         $git->fetchAll();

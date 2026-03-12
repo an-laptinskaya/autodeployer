@@ -24,7 +24,10 @@ echo '<pre>';
 var_dump($git->getCurrentGitDir());
 var_dump($git->getCurrentBranch());
 var_dump($git->getRemoteBranches());
-var_dump($db->updateEnvironmentBranch(1, 'test'));
+$userConfig = $git->setGitUserConfig();
+var_dump($userConfig);
+
+var_dump($db->updateEnvironmentBranch(1, 'master'));
 var_dump($dep->deploy(1));
 
 //$git->checkout('master');
