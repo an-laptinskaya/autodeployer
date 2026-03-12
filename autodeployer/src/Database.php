@@ -1,0 +1,86 @@
+<?php
+
+namespace Autodeployer;
+
+class Database
+{
+    private $pdo;
+    private $prefix;
+
+    public function __construct(array $config)
+    {
+        $this->prefix = $config['db_prefix'];
+
+        $dsn = "mysql:host={$config['db_host']};dbname={$config['db_name']}";
+
+        try {
+            $this->pdo = new \PDO(
+                $dsn,
+                $config['db_user'],
+                $config['db_pass'],
+                [
+                    \PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION,
+                    \PDO::ATTR_DEFAULT_FETCH_MODE => \PDO::FETCH_ASSOC,
+                ]
+            );
+        } catch (\PDOException $e) {
+            die("Ошибка подключения к БД: " . $e->getMessage());
+        }
+    }
+
+    public function initTables()
+    {
+        $this->pdo->exec("
+            CREATE TABLE IF NOT EXISTS {$this->prefix}settings (
+                setting_key VARCHAR(255) NOT NULL PRIMARY KEY,
+                setting_value TEXT NOT NULL
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+        ");
+
+        $this->pdo->exec("
+            CREATE TABLE IF NOT EXISTS {$this->prefix}users (
+                id INT AUTO_INCREMENT PRIMARY KEY,
+                login VARCHAR(100) NOT NULL UNIQUE,
+                password_hash VARCHAR(255) NOT NULL
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+        ");
+
+        $this->pdo->exec("
+            CREATE TABLE IF NOT EXISTS {$this->prefix}environments (
+                id INT AUTO_INCREMENT PRIMARY KEY,
+                name VARCHAR(255) NOT NULL,
+                path VARCHAR(255) NOT NULL,
+                target_branch VARCHAR(100) NOT NULL,
+                build_command VARCHAR(255)
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+        ");
+
+
+        // Создаем админа, если его нет
+        $stmt = $this->pdo->query("SELECT COUNT(*) FROM {$this->prefix}users");
+        if ($stmt->fetchColumn() == 0) {
+            $hash = password_hash('admin', PASSWORD_DEFAULT);
+            $this->pdo->exec("INSERT INTO {$this->prefix}users (login, password_hash) VALUES ('admin', '$hash')");
+        }
+
+        // Генерируем webhook_token, если его нет в настройках
+        $stmt = $this->pdo->query("SELECT COUNT(*) FROM {$this->prefix}settings WHERE setting_key = 'webhook_token'");
+        if ($stmt->fetchColumn() == 0) {
+            // Генерируем случайную строку из 32 символов
+            $randomToken = bin2hex(random_bytes(16));
+            $stmtInsert = $this->pdo->prepare("INSERT INTO {$this->prefix}settings (setting_key, setting_value) VALUES ('webhook_token', ?)");
+            $stmtInsert->execute([$randomToken]);
+        }
+
+    }
+
+    public function getConnection()
+    {
+        return $this->pdo;
+    }
+
+    public function getPrefix()
+    {
+        return $this->prefix;
+    }
+}
