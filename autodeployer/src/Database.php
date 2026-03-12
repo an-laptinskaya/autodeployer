@@ -74,6 +74,23 @@ class Database
 
     }
 
+    /**
+     * Обновляет целевую ветку для площадки
+     */
+    public function updateEnvironmentBranch(int $id, string $branch): bool
+    {
+        $stmt = $this->pdo->prepare("
+            UPDATE {$this->prefix}environments 
+            SET target_branch = :branch 
+            WHERE id = :id
+        ");
+
+        return $stmt->execute([
+            'id' => $id,
+            'branch' => $branch
+        ]);
+    }
+
     public function getConnection()
     {
         return $this->pdo;
