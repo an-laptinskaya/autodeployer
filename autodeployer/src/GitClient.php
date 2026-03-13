@@ -102,7 +102,7 @@ class GitClient
     /**
      * Разрешает конфликты в пользу кода с сервера
      */
-    public function resolveConflicts(string $branch): array
+    public function checkoutAndResolveConflicts(string $branch): array
     {
         // Выбираем код сервера
         $this->run('git checkout ' . escapeshellarg($branch) . ' --theirs .');
