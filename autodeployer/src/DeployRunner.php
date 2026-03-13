@@ -112,7 +112,7 @@ class DeployRunner
         }
 
         $log[] = "[SUCCESS] Деплой успешно завершен!";
-        $log[] = "[SUCCESS] Деплой успешно завершен333!";
+        $log[] = "[SUCCESS] Деплой успешно завершен555!";
         $this->log($deployStartDate, $log[array_key_last($log)]);
 
         // Отправляем успешное уведомление
