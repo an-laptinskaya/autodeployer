@@ -108,14 +108,12 @@ foreach ($branches as $branch) {
             <div><?= $branch['isCurrentBranch'] ? 'Да' : 'Нет' ?></div>
             <div>
                 <button
-                        type="button"
-                    <?= $branch['isCurrentBranch'] ? 'disabled' : '' ?>
-                        onclick="changeBranch(<?= $envId ?>, '<?= $branch['name'] ?>')"
+                    type="button"
+                    onclick="changeBranch(<?= $envId ?>, '<?= $branch['name'] ?>')"
                 >Сменить ветку</button>
                 <button
-                        type="button"
-                    <?= $branch['isCurrentBranch'] ? 'disabled' : '' ?>
-                        onclick="changeBranch(<?= $envId ?>, '<?= $branch['name'] ?>', 'reset')"
+                    type="button"
+                    onclick="changeBranch(<?= $envId ?>, '<?= $branch['name'] ?>', 'reset')"
                 >Сменить ветку со сбросом изменений</button>
             </div>
         </div>
