@@ -102,14 +102,9 @@ class GitClient
     /**
      * Разрешает конфликты в пользу кода с сервера
      */
-    public function checkoutAndResolveConflicts(string $branch): array
+    public function resolveConflicts(): array
     {
-        // Выбираем код сервера
-        $res = $this->run('git checkout --theirs .');
-
-        echo '<pre>';
-        var_dump($res);
-        // Завершаем слияние
+        $this->run('git checkout --theirs .');
         return $this->run('git commit -am "Auto-commit: Remote Conflict Resolved"');
     }
 
