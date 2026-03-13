@@ -58,16 +58,6 @@ class DeployRunner
         }
         $log[] = $res['output'];
 
-        // Переключаемся на нужную ветку
-        $log[] = "[GIT] git checkout {$branch}...";
-        $checkoutResult = $git->checkout($branch);
-        $log[] = $checkoutResult['output'];
-
-        if (!$checkoutResult['success']) {
-            $this->failDeploy($envName, $branch, $log, "Ошибка при переключении ветки");
-            return ['success' => false, 'log' => implode("\n", $log)];
-        }
-
         // Обновляем код
         $log[] = "[GIT] git pull origin {$branch}...";
         $pullResult = $git->pull($branch);
@@ -78,7 +68,15 @@ class DeployRunner
             return ['success' => false, 'log' => implode("\n", $log)];
         }
 
+        // Переключаемся на нужную ветку
+        $log[] = "[GIT] git checkout {$branch}...";
+        $checkoutResult = $git->checkout($branch);
+        $log[] = $checkoutResult['output'];
 
+        if (!$checkoutResult['success']) {
+            $this->failDeploy($envName, $branch, $log, "Ошибка при переключении ветки");
+            return ['success' => false, 'log' => implode("\n", $log)];
+        }
 
         // ОБРАБОТКА КОНФЛИКТОВ (только для режима commit)
         if ($strategy === 'commit' && !$pullResult['success'] && strpos($pullResult['output'], 'Conflict') !== false) {
