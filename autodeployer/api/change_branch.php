@@ -17,16 +17,20 @@ try {
     $dep = new Autodeployer\DeployRunner($db, $not);
 
     // берем ветку, до изменений, чтобы иметь возможность откатиться
-    $stmt = $db->getConnection()->prepare("SELECT `target_branch` FROM `{$db->getPrefix()}environments` WHERE id = :id");
+    $stmt = $db->getConnection()->prepare("SELECT * FROM `{$db->getPrefix()}environments` WHERE id = :id");
     $stmt->execute(['id' => $data['envId']]);
-    $oldBranch = $stmt->fetchColumn();
+    $environment = $stmt->fetch(\PDO::FETCH_ASSOC);
+    $oldBranch = $environment['target_branch'];
 
     $db->updateEnvironmentBranch($data['envId'], $data['branchName']);
     $result = $dep->deploy($data['envId'], $data['strategy']);
 
-    if (!$result['success'] && $oldBranch) {
-        $db->updateEnvironmentBranch($data['envId'], $oldBranch);
-        $result['log'] .= "\n[INFO] База данных откачена к предыдущей ветке: {$oldBranch}";
+    $git = new Autodeployer\GitClient($environment['path']);
+    $actualBranch = $git->getCurrentBranch();
+
+    if (!$result['success'] && $oldBranch !== $actualBranch) {
+        $db->updateEnvironmentBranch($data['envId'], $actualBranch);
+        $result['log'] .= "\n[INFO] База данных откачена к предыдущей ветке: {$actualBranch}";
     }
 
     echo json_encode($result);
