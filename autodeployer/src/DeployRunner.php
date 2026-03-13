@@ -67,19 +67,6 @@ class DeployRunner
         $log[] = $res['output'];
         $this->log($deployStartDate, $log[array_key_last($log)]);
 
-        // Обновляем код
-        $log[] = "[GIT] git pull origin {$branch}...";
-        $this->log($deployStartDate, $log[array_key_last($log)]);
-        $pullResult = $git->pull($branch);
-        $log[] = $pullResult['output'];
-        $this->log($deployStartDate, $log[array_key_last($log)]);
-
-        if (!$pullResult['success']) {
-            $this->failDeploy($envName, $branch, $log, "Ошибка при выполнении pull");
-            $this->log($deployStartDate, $log[array_key_last($log)]);
-            return ['success' => false, 'log' => implode("\n", $log)];
-        }
-
         // Переключаемся на нужную ветку
         $log[] = "[GIT] git checkout {$branch}...";
         $this->log($deployStartDate, $log[array_key_last($log)]);
@@ -89,6 +76,19 @@ class DeployRunner
 
         if (!$checkoutResult['success']) {
             $this->failDeploy($envName, $branch, $log, "Ошибка при переключении ветки");
+            $this->log($deployStartDate, $log[array_key_last($log)]);
+            return ['success' => false, 'log' => implode("\n", $log)];
+        }
+
+        // Обновляем код
+        $log[] = "[GIT] git pull origin {$branch}...";
+        $this->log($deployStartDate, $log[array_key_last($log)]);
+        $pullResult = $git->pull($branch);
+        $log[] = $pullResult['output'];
+        $this->log($deployStartDate, $log[array_key_last($log)]);
+
+        if (!$pullResult['success']) {
+            $this->failDeploy($envName, $branch, $log, "Ошибка при выполнении pull");
             $this->log($deployStartDate, $log[array_key_last($log)]);
             return ['success' => false, 'log' => implode("\n", $log)];
         }
