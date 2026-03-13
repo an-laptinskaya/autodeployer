@@ -80,6 +80,19 @@ class DeployRunner
             return ['success' => false, 'log' => implode("\n", $log)];
         }
 
+        // Переключаемся на нужную ветку
+        $log[] = "[GIT] git checkout {$branch}...";
+        $this->log($deployStartDate, $log[array_key_last($log)]);
+        $checkoutResult = $git->checkout($branch);
+        $log[] = $checkoutResult['output'];
+        $this->log($deployStartDate, $log[array_key_last($log)]);
+
+        if (!$checkoutResult['success']) {
+            $this->failDeploy($envName, $branch, $log, "Ошибка при переключении ветки");
+            $this->log($deployStartDate, $log[array_key_last($log)]);
+            return ['success' => false, 'log' => implode("\n", $log)];
+        }
+
         // ОБРАБОТКА КОНФЛИКТОВ (только для режима commit)
         if ($strategy === 'commit' && !$pullResult['success'] && strpos($pullResult['output'], 'Conflict') !== false) {
             $log[] = "[GIT] Обнаружен конфликт! Решаем автоматически в пользу сервера (--theirs)...";
@@ -101,18 +114,6 @@ class DeployRunner
 
 
 
-        // Переключаемся на нужную ветку
-        $log[] = "[GIT] git checkout {$branch}...";
-        $this->log($deployStartDate, $log[array_key_last($log)]);
-        $checkoutResult = $git->checkout($branch);
-        $log[] = $checkoutResult['output'];
-        $this->log($deployStartDate, $log[array_key_last($log)]);
-
-        if (!$checkoutResult['success']) {
-            $this->failDeploy($envName, $branch, $log, "Ошибка при переключении ветки");
-            $this->log($deployStartDate, $log[array_key_last($log)]);
-            return ['success' => false, 'log' => implode("\n", $log)];
-        }
 
         // Выполнение пост-команд (например, npm ci, сброс кэша)
         if (!empty($environment['build_command'])) {
@@ -125,7 +126,7 @@ class DeployRunner
         }
 
         $log[] = "[SUCCESS] Деплой успешно завершен!";
-        $log[] = "[SUCCESS] Деплой успешно завершен222!";
+        $log[] = "[SUCCESS] Деплой успешно завершен333!";
         $this->log($deployStartDate, $log[array_key_last($log)]);
 
         // Отправляем успешное уведомление
