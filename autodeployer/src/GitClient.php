@@ -105,7 +105,10 @@ class GitClient
     public function checkoutAndResolveConflicts(string $branch): array
     {
         // Выбираем код сервера
-        $this->run('git checkout ' . escapeshellarg($branch) . ' --theirs .');
+        $res = $this->run('git checkout ' . escapeshellarg($branch) . ' --theirs .');
+
+        echo '<pre>';
+        var_dump($res);
         // Завершаем слияние
         return $this->run('git commit -am "Auto-commit: Remote Conflict Resolved"');
     }
