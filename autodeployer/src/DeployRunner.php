@@ -83,7 +83,7 @@ class DeployRunner
         $log[] = $pullResult['output'];
         $this->log($deployStartDate, $log[array_key_last($log)]);
 
-        if (!$pullResult['success'] && strpos($pullResult['output'], 'Conflict') !== false) {
+        if (!$pullResult['success'] && stripos($pullResult['output'], "conflict") !== false) {
             $log[] = "[GIT] Обнаружен конфликт! Решаем автоматически в пользу сервера (--theirs)...";
             $this->log($deployStartDate, $log[array_key_last($log)]);
             $resolveResult = $git->resolveConflicts();
