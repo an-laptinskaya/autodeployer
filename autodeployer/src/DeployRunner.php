@@ -81,6 +81,7 @@ class DeployRunner
         $this->log($deployStartDate, $log[array_key_last($log)]);
         $pullResult = $git->pull($branch);
         $log[] = $pullResult['output'];
+        $log[] = $pullResult['success'];
         $this->log($deployStartDate, $log[array_key_last($log)]);
 
         if (!$pullResult['success']) {
