@@ -50,7 +50,7 @@ var_dump($result);
         body { font-family: Arial, sans-serif; margin: 40px; background: #f4f4f9; }
         .card { background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
         select, button { padding: 10px; margin-top: 10px; font-size: 16px; }
-        button { background: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer; }
+        button { background: #bddcff; color: black; border: none; border-radius: 4px; cursor: pointer; padding: 8px; }
         button:hover { background: #0056b3; }
         .branch-row {
             display: flex;
@@ -76,7 +76,18 @@ var_dump($result);
                 <?php endif ;?>
             </div>
             <div><?= $branch['isCurrentBranch'] ? 'Да' : 'Нет' ?></div>
-            <button type="button" <?= $branch['isCurrentBranch'] ? 'disabled' : '' ?> onclick="changeBranch('<?= $branch['name'] ?>')">Сменить ветку</button>
+            <div>
+                <button
+                        type="button"
+                    <?= $branch['isCurrentBranch'] ? 'disabled' : '' ?>
+                        onclick="changeBranch(<?= $envId ?>, '<?= $branch['name'] ?>')"
+                >Сменить ветку</button>
+                <button
+                        type="button"
+                    <?= $branch['isCurrentBranch'] ? 'disabled' : '' ?>
+                        onclick="changeBranch(<?= $envId ?>, '<?= $branch['name'] ?>', 'reset')"
+                >Сменить ветку со сбросом изменений</button>
+            </div>
         </div>
     <?php endforeach ; ?>
 
@@ -103,15 +114,21 @@ var_dump($result);
 
 <script>
 
-    async function changeBranch(branchName) {
+    async function changeBranch(envId, branchName, strategy = 'commit') {
+        console.log(envId);
         console.log(branchName);
+        console.log(strategy);
         if (!branchName) {
             return;
         }
 
         const response = await fetch('/autodeployer/api/change_branch.php', {
             method: 'POST',
-            body: JSON.stringify({branchName: branchName}),
+            body: JSON.stringify({
+                envId: envId,
+                branchName: branchName,
+                strategy: strategy
+            }),
             headers: {
                 'Content-Type': 'application/json'
             }
