@@ -81,14 +81,7 @@ class DeployRunner
         $this->log($deployStartDate, $log[array_key_last($log)]);
         $pullResult = $git->pull($branch);
         $log[] = $pullResult['output'];
-        $log[] = $pullResult['success'];
         $this->log($deployStartDate, $log[array_key_last($log)]);
-
-        if (!$pullResult['success']) {
-            $this->failDeploy($envName, $branch, $log, "Ошибка при выполнении pull");
-            $this->log($deployStartDate, $log[array_key_last($log)]);
-            return ['success' => false, 'log' => implode("\n", $log)];
-        }
 
         if (!$pullResult['success'] && strpos($pullResult['output'], 'Conflict') !== false) {
             $log[] = "[GIT] Обнаружен конфликт! Решаем автоматически в пользу сервера (--theirs)...";
