@@ -101,6 +101,13 @@ class DeployRunner
             return ['success' => false, 'log' => implode("\n", $log)];
         }
 
+
+        $log[] = "[GIT] git push {$branch}...";
+        $this->log($deployStartDate, $log[array_key_last($log)]);
+        $pushResult = $git->push($branch);
+        $log[] = $pushResult['output'];
+        $this->log($deployStartDate, $log[array_key_last($log)]);
+
         // Выполнение пост-команд (например, npm ci, сброс кэша)
         if (!empty($environment['build_command'])) {
             $log[] = "[CMD] Выполняем: {$environment['build_command']}";
