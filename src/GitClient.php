@@ -18,8 +18,6 @@ class GitClient
 
     private function run(string $command): array
     {
-        // todo delete after tests
-        putenv("HOME=/var/www");
         $fullCommand = sprintf('cd %s && %s 2>&1', escapeshellarg($this->currentGitDir), $command);
         exec($fullCommand, $output, $returnCode);
 
