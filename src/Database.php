@@ -60,7 +60,10 @@ class Database
         $stmt = $this->pdo->query("SELECT COUNT(*) FROM {$this->prefix}users");
         if ($stmt->fetchColumn() == 0) {
             $hash = password_hash('autodeployer', PASSWORD_DEFAULT);
-            $this->pdo->exec("INSERT INTO {$this->prefix}users (login, password_hash) VALUES ('autodeployer', '$hash')");
+            $this->pdo->exec("
+                    INSERT INTO {$this->prefix}users (login, password_hash, is_admin) 
+                    VALUES ('autodeployer', '$hash', 1)
+            ");
         }
 
     }

@@ -6,10 +6,6 @@ $db = new Autodeployer\Database($config);
 $stmt = $db->getConnection()->query("SELECT * FROM `{$db->getPrefix()}environments`");
 $environments = $stmt->fetchAll(\PDO::FETCH_ASSOC);
 
-if (!$environments) {
-    die("Площадки не найдены.");
-}
-
 $resultEnvs = [];
 
 foreach ($environments as $environment) {
@@ -87,6 +83,11 @@ foreach ($environments as $environment) {
 </div>
 
 <div class="card-container">
+    <?php if (empty($resultEnvs)): ?>
+    <div class="card">
+        <div class="env-not-found">Площадки не найдены</div>
+    </div>
+    <?php endif; ?>
     <?php if (!empty($resultEnvs)): ?>
         <?php foreach ($resultEnvs as $env): ?>
             <div class="card">
