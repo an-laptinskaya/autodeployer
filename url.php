@@ -5,17 +5,34 @@ if (!defined('ROOT_PATH')) {
 }
 
 if (!defined('BASE_URL')) {
-    $rawDocRoot = $_SERVER['DOCUMENT_ROOT'] ?? '';
-    $docRoot = realpath($rawDocRoot) ?: $rawDocRoot;
-    $dir = realpath(__DIR__) ?: __DIR__;
+    // ========================================================================
+    // НАСТРОЙКА ПУТИ ДЛЯ БРАУЗЕРА (BASE_URL)
+    // ========================================================================
+    // Если используется Nginx/Apache ALIAS, жестко укажите путь в $manualBaseUrl
+    // Например: $manualBaseUrl = '/deploy/';
+    //
+    // Если используется ПОДДОМЕН (deploy.site.com) или обычная папка внутри
+    // сайта (site.com/autodeployer/), оставьте строку пустой: '',
+    // скрипт определит всё автоматически!
+    // ========================================================================
 
-    $docRoot = rtrim(str_replace('\\', '/', $docRoot), '/');
-    $dir = str_replace('\\', '/', $dir);
+    $manualBaseUrl = '';
 
-    $baseUrl = str_replace($docRoot, '', $dir);
-    $baseUrl = rtrim($baseUrl, '/') . '/';
+    if ($manualBaseUrl) {
+        define('BASE_URL', $manualBaseUrl);
+    } else {
+        $rawDocRoot = $_SERVER['DOCUMENT_ROOT'] ?? '';
+        $docRoot = realpath($rawDocRoot) ?: $rawDocRoot;
+        $dir = realpath(__DIR__) ?: __DIR__;
 
-    define('BASE_URL', $baseUrl);
+        $docRoot = rtrim(str_replace('\\', '/', $docRoot), '/');
+        $dir = str_replace('\\', '/', $dir);
+
+        $baseUrl = str_replace($docRoot, '', $dir);
+        $baseUrl = rtrim($baseUrl, '/') . '/';
+
+        define('BASE_URL', $baseUrl);
+    }
 }
 
 require_once ROOT_PATH . 'vendor/autoload.php';
