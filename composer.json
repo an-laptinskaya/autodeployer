@@ -1,0 +1,21 @@
+{
+  "name": "an-laptinskaya/autodeployer",
+  "description": "CI/CD панель для автоматического деплоя сайтов через вебхуки.",
+  "type": "project",
+  "license": "MIT",
+  "require": {
+    "php": "^7.4 || ^8.0",
+    "ext-pdo": "*",
+    "ext-json": "*"
+  },
+  "autoload": {
+    "psr-4": {
+      "Autodeployer\\": "src/"
+    }
+  },
+  "scripts": {
+    "post-create-project-cmd": [
+      "php -r \"file_exists('config/config.php') || copy('config/config.example.php', 'config/config.php');\""
+    ]
+  }
+}

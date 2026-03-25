@@ -17,3 +17,5 @@ if (!defined('BASE_URL')) {
 
     define('BASE_URL', $baseUrl);
 }
+
+require_once ROOT_PATH . 'vendor/autoload.php';

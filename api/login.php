@@ -16,7 +16,6 @@ if (!$data) {
 $username = trim($data['username'] ?? '');
 $password = $data['password'] ?? '';
 
-require_once ROOT_PATH . 'src/Database.php';
 $config = require ROOT_PATH . 'config/config.php';
 
 $db = new Autodeployer\Database($config);

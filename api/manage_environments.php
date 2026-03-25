@@ -18,7 +18,6 @@ if (!$data || empty($data['action'])) {
     exit;
 }
 
-require_once ROOT_PATH . 'src/Database.php';
 $config = require ROOT_PATH . 'config/config.php';
 
 try {

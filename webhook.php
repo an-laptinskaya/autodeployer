@@ -17,8 +17,6 @@ if (!$data) {
 
 $config = require ROOT_PATH . 'config/config.php';
 
-require_once ROOT_PATH . 'src/Database.php';
-
 $db = new Autodeployer\Database($config);
 
 $stmt = $db->getConnection()->query("SELECT `setting_value` FROM `{$db->getPrefix()}settings` WHERE setting_key = 'webhook_token'");
@@ -96,9 +94,6 @@ if (empty($branch)) {
     http_response_code(200);
     die("Not a push event or branch not found. Ignored.");
 }
-
-require_once ROOT_PATH . 'src/GitClient.php';
-require_once ROOT_PATH . 'src/DeployRunner.php';
 
 try {
 

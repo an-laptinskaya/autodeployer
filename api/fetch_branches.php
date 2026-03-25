@@ -11,9 +11,6 @@ if (empty($data['envId'])) {
     exit;
 }
 
-require_once ROOT_PATH . 'src/Database.php';
-require_once ROOT_PATH . 'src/GitClient.php';
-
 $config = require ROOT_PATH . 'config/config.php';
 
 try {

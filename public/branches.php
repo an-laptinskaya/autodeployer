@@ -1,7 +1,6 @@
 <?php
 
 $config = require ROOT_PATH . 'config/config.php';
-require_once ROOT_PATH . 'src/Notifier.php';
 
 $db = new Autodeployer\Database($config);
 $stmt = $db->getConnection()->query("SELECT * FROM `{$db->getPrefix()}environments`");

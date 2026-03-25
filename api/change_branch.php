@@ -8,10 +8,6 @@ $inputJSON = file_get_contents('php://input');
 
 $data = json_decode($inputJSON, true);
 
-require_once ROOT_PATH . 'src/Database.php';
-require_once ROOT_PATH . 'src/GitClient.php';
-require_once ROOT_PATH . 'src/DeployRunner.php';
-
 $config = require ROOT_PATH . 'config/config.php';
 
 try {
