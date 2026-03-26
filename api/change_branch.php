@@ -27,7 +27,7 @@ try {
 
     if (!$result['success'] && $oldBranch !== $actualBranch) {
         $db->updateEnvironmentBranch($data['envId'], $actualBranch);
-        $result['log'] .= "\n[INFO] База данных откачена к предыдущей ветке: {$actualBranch}";
+        $result['log'] .= "\n[INFO] База данных откачена к ветке: {$actualBranch}";
     }
 
     echo json_encode($result);

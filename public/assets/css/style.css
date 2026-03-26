@@ -164,7 +164,7 @@ th { background: #f8f9fa; }
 .text-empty { color: #999; font-style: italic; }
 
 
-.branch-row { display: grid; grid-template-columns: .3fr 1fr 150px 200px; align-items: start; width: 100%; border-bottom: 1px solid #cdcdcd; padding: 10px 0; gap: 10px; }
+.branch-row { display: grid; grid-template-columns: .5fr 1fr 150px 150px; align-items: start; width: 100%; border-bottom: 1px solid #cdcdcd; padding: 10px 0; gap: 10px; }
 .branch-row.branch-header { align-items: center; justify-content: center; border-top: 1px solid #cdcdcd; padding: 10px 0; font-weight: bold; }
 .branch-row.branch-header div { padding: 10px 0; }
 .branch-row > *:nth-child(3) { justify-self: center; }
