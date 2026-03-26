@@ -12,6 +12,7 @@ class DeployRunner
 
     public function __construct(Database $db)
     {
+        $this->ensureLogDirectoryExists();
         $this->db = $db;
     }
 
@@ -183,6 +184,17 @@ class DeployRunner
             foreach ($toDelete as $file) {
                 unlink($file);
             }
+        }
+    }
+
+    private function ensureLogDirectoryExists()
+    {
+        if (is_dir($this->logPath)) {
+            return;
+        }
+
+        if (!mkdir($this->logPath, 0775, true) && !is_dir($this->logPath)) {
+            throw new \RuntimeException("Нет прав на создание папки для логов: {$this->logPath}");
         }
     }
 }
