@@ -152,7 +152,7 @@ class DeployRunner
                 $log[] = implode("\n", $cmdOutput);
                 $this->log($deployLogName, $log[array_key_last($log)]);
             } else {
-                $log[] = "[SKIP] Изменений в markup/ нет. Сборка пропущена.";
+                $log[] = "[SKIP] Изменений нет. Сборка пропущена.";
                 $this->log($deployLogName, $log[array_key_last($log)]);
             }
         }
