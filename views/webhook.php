@@ -1,17 +1,9 @@
-<?php
-
-if (empty($_SESSION['is_admin'])) {
-    http_response_code(403);
-    die("Доступ запрещен. Эта страница только для администраторов.");
-}
-?>
-
 <!DOCTYPE html>
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
     <title>Настройки Webhook</title>
-    <link rel="stylesheet" href="<?= BASE_URL ?>public/assets/css/style.css">
+    <link rel="stylesheet" href="<?= BASE_URL ?>assets/css/style.css">
 </head>
 <body>
 
@@ -46,7 +38,7 @@ if (empty($_SESSION['is_admin'])) {
 <script>
     const BASE_URL = '<?= BASE_URL ?>';
 </script>
-<script src="<?= BASE_URL ?>public/assets/js/script.js"></script>
+<script src="<?= BASE_URL ?>assets/js/script.js"></script>
 
 </body>
 </html>

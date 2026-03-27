@@ -1,8 +1,8 @@
 <?php
 
-namespace Autodeployer;
+namespace Autodeployer\Services;
 
-require_once dirname(__DIR__) . '/url.php';
+use Autodeployer\Core\Database;
 
 class DeployRunner
 {

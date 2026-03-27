@@ -1,68 +1,9 @@
-<?php
-
-$config = require ROOT_PATH . 'config/config.php';
-
-$db = new Autodeployer\Database($config);
-$stmt = $db->getConnection()->query("SELECT * FROM `{$db->getPrefix()}environments`");
-$environments = $stmt->fetchAll(\PDO::FETCH_ASSOC);
-
-$resultEnvs = [];
-
-foreach ($environments as $environment) {
-    $git = new \Autodeployer\GitClient($environment['path']);
-    $notifier = new Autodeployer\Notifier();
-    $alerts = $notifier->getEnvironmentAlerts($git);
-    $branchesData = [];
-    $currentBranch = $environment['target_branch'];
-    $branches = $git->getRemoteBranches();
-
-    foreach ($branches as $branch) {
-        $commits = $git->getBranchCommits($branch);
-        $prettyCommits = [];
-        foreach ($commits as $commit) {
-            $hash = '';
-            $msg = $commit;
-            $author = '';
-            $time = '';
-            if (preg_match('/^([a-f0-9]+)\s+-\s+([^,]+),\s+(.*?)\s+:\s+(.*)$/', $commit, $m)) {
-                $hash = $m[1];
-                $author = $m[2];
-                $time = $m[3];
-                $msg = $m[4];
-            }
-            $prettyCommits[] = [
-                    'hash' => $hash,
-                    'author' => $author,
-                    'time' => $time,
-                    'msg' => $msg,
-            ];
-        }
-
-        $branchesData[] = [
-            'name' => $branch,
-            'commits' => $prettyCommits,
-            'isCurrentBranch' => $currentBranch === $branch,
-        ];
-    }
-
-    $resultEnvs[] = [
-        'id' => $environment['id'],
-        'name' => $environment['name'],
-        'path' => $environment['path'],
-        'target_branch' => $currentBranch,
-        'branches' => $branchesData,
-        'alerts' => $alerts,
-    ];
-}
-
-?>
-
 <!DOCTYPE html>
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
     <title>Управление деплоем</title>
-    <link rel="stylesheet" href="<?= BASE_URL ?>public/assets/css/style.css">
+    <link rel="stylesheet" href="<?= BASE_URL ?>assets/css/style.css">
 </head>
 <body>
 
@@ -227,7 +168,7 @@ foreach ($environments as $environment) {
 <script>
     const BASE_URL = '<?= BASE_URL ?>';
 </script>
-<script src="<?= BASE_URL ?>public/assets/js/script.js"></script>
+<script src="<?= BASE_URL ?>assets/js/script.js"></script>
 
 </body>
 </html>

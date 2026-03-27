@@ -11,7 +11,7 @@ async function login(event) {
     const password = document.getElementById('password').value;
 
     try {
-        const response = await fetch(BASE_URL + 'api/login.php', {
+        const response = await fetch(BASE_URL + '?api=login', {
             method: 'POST',
             body: JSON.stringify({
                 username: username,
@@ -52,10 +52,9 @@ async function addUser(event) {
     btn.disabled = true;
 
     try {
-        const response = await fetch(BASE_URL + 'api/manage_users.php', {
+        const response = await fetch(BASE_URL + '?api=add_user', {
             method: 'POST',
             body: JSON.stringify({
-                action: 'add',
                 login: login,
                 password: password,
                 is_admin: isAdmin
@@ -89,10 +88,9 @@ async function deleteUser(userId, userLogin) {
     }
 
     try {
-        const response = await fetch(BASE_URL + 'api/manage_users.php', {
+        const response = await fetch(BASE_URL + '?api=delete_user', {
             method: 'POST',
             body: JSON.stringify({
-                action: 'delete',
                 user_id: userId
             }),
             headers: { 'Content-Type': 'application/json' }
@@ -113,13 +111,13 @@ async function deleteUser(userId, userLogin) {
 async function saveEnv(event, action) {
     event.preventDefault();
 
+    const actionRoute = action === 'add' ? 'add_environment' : 'edit_environment';
     const prefix = action === 'add' ? 'add' : 'edit';
     const btn = document.getElementById(prefix + 'Btn');
     const alertBox = document.getElementById(prefix + 'Alert');
     const originalText = btn.innerText;
 
     const data = {
-        action: action,
         name: document.getElementById(prefix + 'Name').value,
         path: document.getElementById(prefix + 'Path').value,
         target_branch: document.getElementById(prefix + 'Branch').value,
@@ -129,11 +127,11 @@ async function saveEnv(event, action) {
 
     if (action === 'edit') data.id = document.getElementById('editId').value;
 
-    btn.innerText = '⏳ Загрузка...';
+    btn.innerText = 'Загрузка...';
     btn.disabled = true;
 
     try {
-        const response = await fetch(BASE_URL + 'api/manage_environments.php', {
+        const response = await fetch(BASE_URL + '?api=' + actionRoute, {
             method: 'POST',
             body: JSON.stringify(data),
             headers: { 'Content-Type': 'application/json' }
@@ -163,9 +161,9 @@ async function deleteEnv(id, name) {
     if (!confirm(`Удалить площадку "${name}" из базы данных? (Папка на сервере останется нетронутой)`)) return;
 
     try {
-        const response = await fetch(BASE_URL + 'api/manage_environments.php', {
+        const response = await fetch(BASE_URL + '?api=delete_environment', {
             method: 'POST',
-            body: JSON.stringify({ action: 'delete', id: id }),
+            body: JSON.stringify({ id: id }),
             headers: { 'Content-Type': 'application/json' }
         });
         const result = await response.json();
@@ -230,7 +228,7 @@ async function startDeployment() {
     closeBtn.style.display = 'none';
 
     try {
-        const response = await fetch(BASE_URL + 'api/change_branch.php', {
+        const response = await fetch(BASE_URL + '?api=change_branch', {
             method: 'POST',
             body: JSON.stringify({
                 envId: currentDeployEnvId,
@@ -284,7 +282,7 @@ async function refreshBranches(envId) {
     btn.style.opacity = '0.7';
 
     try {
-        const response = await fetch(BASE_URL + 'api/fetch_branches.php', {
+        const response = await fetch(BASE_URL + '?api=fetch_branches', {
             method: 'POST',
             body: JSON.stringify({ envId: envId }),
             headers: { 'Content-Type': 'application/json' }
@@ -321,7 +319,7 @@ async function generateToken() {
     resultBox.style.display = 'none';
 
     try {
-        const response = await fetch(BASE_URL + 'api/generate_webhook_token.php', {
+        const response = await fetch(BASE_URL + '?api=generate_webhook_token', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' }
         });

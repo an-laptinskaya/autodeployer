@@ -1,6 +1,6 @@
 <?php
 
-namespace Autodeployer;
+namespace Autodeployer\Services;
 
 class GitClient
 {
