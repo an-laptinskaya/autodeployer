@@ -47,7 +47,7 @@ class WebhookController extends BaseController
 
         if (!$data) {
             http_response_code(400);
-            die("Invalid payload");
+            die("Некорректные данные вебхука");
         }
 
         $connection = $this->db->getConnection();
@@ -56,7 +56,7 @@ class WebhookController extends BaseController
         $stmt = $connection->query("SELECT `setting_value` FROM `{$prefix}settings` WHERE setting_key = 'webhook_token'");
         $webhookToken = $stmt->fetchColumn();
         if ($webhookToken === false) {
-            die("There is no webhook token in the database table");
+            die("Токен вебхука не настроен в базе данных");
         }
 
         $platform = 'unknown';
@@ -69,7 +69,7 @@ class WebhookController extends BaseController
             $expectedSignature = 'sha256=' . hash_hmac('sha256', $payload, $webhookToken);
             if (!hash_equals($expectedSignature, $signature)) {
                 http_response_code(403);
-                die("GitHub signature mismatch");
+                die("Неверная подпись GitHub");
             }
 
             if ($headers['X-GITHUB-EVENT'] === 'push' && isset($data['ref'])) {
@@ -82,7 +82,7 @@ class WebhookController extends BaseController
             $token = $headers['X-GITLAB-TOKEN'] ?? '';
             if ($token !== $webhookToken) {
                 http_response_code(403);
-                die("GitLab token mismatch");
+                die("Неверный токен GitLab");
             }
 
             if ($headers['X-GITLAB-EVENT'] === 'Push Hook' && isset($data['ref'])) {
@@ -107,7 +107,7 @@ class WebhookController extends BaseController
 
             if (!$isAuthenticated) {
                 http_response_code(403);
-                die("Bitbucket authentication failed. Please provide a valid ?token= in the URL or a valid X-Hub-Signature.");
+                die("Ошибка аутентификации Bitbucket. Передайте валидный ?token= в URL или правильный заголовок X-Hub-Signature");
             }
 
             if ($headers['X-EVENT-KEY'] === 'repo:push' && !empty($data['push']['changes'])) {
@@ -121,12 +121,12 @@ class WebhookController extends BaseController
 
         } else {
             http_response_code(400);
-            die("Unknown platform");
+            die("Неизвестная платформа");
         }
 
         if (empty($branch)) {
             http_response_code(200);
-            die("Not a push event or branch not found. Ignored.");
+            die("Не является push-событием, либо ветка не найдена.");
         }
 
         try {
@@ -137,7 +137,7 @@ class WebhookController extends BaseController
 
             if (empty($environments)) {
                 http_response_code(200);
-                die("No environments listening to branch: {$branch}");
+                die("Нет площадок, отслеживающих ветку: {$branch}");
             }
 
             $dep = new DeployRunner($this->db);
@@ -147,11 +147,11 @@ class WebhookController extends BaseController
             }
 
             http_response_code(200);
-            echo "Webhook processed successfully for branch: {$branch}";
+            echo "Вебхук из {$platform} успешно обработан для ветки: {$branch}";
 
         } catch (\Exception $e) {
             http_response_code(500);
-            die("Error: " . $e->getMessage());
+            die("Ошибка: " . $e->getMessage());
         }
     }
 }

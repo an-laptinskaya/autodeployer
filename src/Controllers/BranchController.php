@@ -87,7 +87,7 @@ class BranchController extends BaseController
             $environment = $stmt->fetch(\PDO::FETCH_ASSOC);
 
             if (!$environment) {
-                echo json_encode(['success' => false, 'error' => 'Environment not found']);
+                echo json_encode(['success' => false, 'error' => 'Площадка не найдена']);
                 exit;
             }
 
