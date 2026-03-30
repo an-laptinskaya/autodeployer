@@ -19,6 +19,15 @@ class App
 
     public function start()
     {
+        $isInstalled = file_exists(ROOT_PATH . 'config/installed.lock');
+
+        $currentPage = $_GET['page'] ?? 'branches';
+
+        if (!$isInstalled && $currentPage !== 'install') {
+            header("Location: " . BASE_URL . "?page=install");
+            exit;
+        }
+
         $this->loadRoutes();
         $this->router->dispatch();
     }

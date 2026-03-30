@@ -8,8 +8,6 @@ class Router
     private array $routes = [
         'GET' => [],
         'POST' => [],
-        'PUT' => [],
-        'DELETE' => [],
     ];
 
     public function __construct(Database $db)
@@ -25,16 +23,6 @@ class Router
     public function post(string $path, array $controller)
     {
         $this->routes['POST'][$path] = $controller;
-    }
-
-    public function put(string $path, array $controller)
-    {
-        $this->routes['PUT'][$path] = $controller;
-    }
-
-    public function delete(string $path, array $controller)
-    {
-        $this->routes['DELETE'][$path] = $controller;
     }
 
     public function dispatch()

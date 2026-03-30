@@ -6,13 +6,12 @@ class InstallController extends BaseController
 {
     public function run()
     {
+        if (file_exists(ROOT_PATH . 'config/installed.lock')) {
+            die("Приложение уже установлено! Удалите файл config/installed.lock, если хотите переустановить.");
+        }
+
         $connection = $this->db->getConnection();
         $prefix = $this->db->getPrefix();
-
-        $stmt = $connection->query("SHOW TABLES LIKE '{$prefix}users'");
-        if ($stmt->rowCount() > 0) {
-            die("Приложение уже установлено! Удалите таблицы в БД, если хотите переустановить.");
-        }
 
         try {
             $connection->exec("
@@ -51,7 +50,19 @@ class InstallController extends BaseController
                 ");
             }
 
-            echo "Установка успешно завершена!";
+            file_put_contents(ROOT_PATH . 'config/installed.lock', 'Установлено: ' . date('Y-m-d H:i:s'));
+
+            $stmt = $connection->query("SELECT id FROM {$prefix}users WHERE login = 'autodeployer'");
+            $adminId = $stmt->fetchColumn();
+
+            $_SESSION['user_id']   = $adminId;
+            $_SESSION['username']  = 'autodeployer';
+            $_SESSION['is_admin']  = true;
+            $_SESSION['logged_in'] = true;
+            session_regenerate_id(true);
+
+            header("Location: " . BASE_URL . "?page=branches");
+            exit;
 
         } catch (\Exception $e) {
             echo "Ошибка при установке БД: " . $e->getMessage();
