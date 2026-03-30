@@ -40,7 +40,13 @@ class WebhookController extends BaseController
 
     public function handleIncomingWebhook()
     {
-        $headers = getallheaders();
+        $headers = [];
+        foreach ($_SERVER as $key => $value) {
+            if (strpos($key, 'HTTP_') === 0) {
+                $headerName = str_replace('_', '-', substr($key, 5));
+                $headers[$headerName] = $value;
+            }
+        }
         $headers = array_change_key_case($headers, CASE_UPPER);
         $payload = file_get_contents('php://input');
         $data = json_decode($payload, true);

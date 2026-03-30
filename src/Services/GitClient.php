@@ -45,7 +45,7 @@ class GitClient
     public function getCurrentBranch()
     {
         $res = $this->run('git branch | grep "*"');
-        if (!$res['success']) return [];
+        if (!$res['success']) return '';
 
         $result = trim(str_replace("*", "", $res['output']));
 
