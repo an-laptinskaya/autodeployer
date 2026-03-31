@@ -3,23 +3,23 @@
 <head>
     <meta charset="UTF-8">
     <title>Настройки Webhook</title>
-    <link rel="stylesheet" href="<?= BASE_URL ?>assets/css/style.css">
+    <link rel="stylesheet" href="<?php echo BASE_URL; ?>assets/css/style.css">
 </head>
 <body>
 
 <div class="nav-bar">
     <div class="nav-links">
         <span style="font-size: 18px; font-weight: bold; color: #fff; margin-right: 20px;">AutoDeployer</span>
-        <a href="<?= BASE_URL ?>?page=branches">Площадки</a>
+        <a href="<?php echo BASE_URL; ?>?page=branches">Площадки</a>
         <?php if (!empty($_SESSION['is_admin'])): ?>
-            <a href="<?= BASE_URL ?>?page=users">Пользователи</a>
-            <a href="<?= BASE_URL ?>?page=environments">Настройки площадок</a>
-            <a href="<?= BASE_URL ?>?page=webhook" class="active">Настройки Webhook</a>
+            <a href="<?php echo BASE_URL; ?>?page=users">Пользователи</a>
+            <a href="<?php echo BASE_URL; ?>?page=environments">Настройки площадок</a>
+            <a href="<?php echo BASE_URL; ?>?page=webhook" class="active">Настройки Webhook</a>
         <?php endif; ?>
     </div>
     <div>
-        <?= htmlspecialchars($_SESSION['username']) ?>
-        <a href="<?= BASE_URL ?>?page=logout" style="color: #ffcccc; margin-left: 15px; text-decoration: none;">Выйти</a>
+        <?php echo htmlspecialchars($_SESSION['username']); ?>
+        <a href="<?php echo BASE_URL; ?>?page=logout" style="color: #ffcccc; margin-left: 15px; text-decoration: none;">Выйти</a>
     </div>
 </div>
 
@@ -36,9 +36,9 @@
 </div>
 
 <script>
-    const BASE_URL = '<?= BASE_URL ?>';
+    const BASE_URL = '<?php echo BASE_URL; ?>';
 </script>
-<script src="<?= BASE_URL ?>assets/js/script.js"></script>
+<script src="<?php echo BASE_URL; ?>assets/js/script.js"></script>
 
 </body>
 </html>

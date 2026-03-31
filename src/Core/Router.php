@@ -39,6 +39,10 @@ class Router
             $controllerClass = $callback[0];
             $controllerMethod = $callback[1];
 
+            if (!class_exists($controllerClass) || !method_exists($controllerClass, $controllerMethod)) {
+                die("Контроллера или метода контроллера не существует");
+            }
+
             $controller = new $controllerClass($this->db);
             $controller->$controllerMethod();
         } else {

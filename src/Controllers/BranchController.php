@@ -8,14 +8,29 @@ use Autodeployer\Services\Notifier;
 
 class BranchController extends BaseController
 {
+    private static array $envSelectFields = [
+        'id',
+        'name',
+        'path',
+        'target_branch'
+    ];
+
+    private static array $envFetchFields = ['path'];
+    private static array $envDeployFields = ['path', 'target_branch'];
+
     public function index()
     {
         $this->requireLogin();
         $connection = $this->db->getConnection();
         $prefix = $this->db->getPrefix();
 
-        $stmt = $connection->query("SELECT * FROM `{$prefix}environments`");
-        $environments = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+        try {
+            $columns = $this->db->prepareColumns('environments', self::$envSelectFields);
+            $stmt = $connection->query("SELECT {$columns} FROM `{$prefix}environments`");
+            $environments = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+        } catch (\Exception $e) {
+            die("Ошибка: " . $e->getMessage());
+        }
 
         $resultEnvs = [];
 
@@ -81,8 +96,8 @@ class BranchController extends BaseController
         $prefix = $this->db->getPrefix();
 
         try {
-
-            $stmt = $connection->prepare("SELECT `path` FROM `{$prefix}environments` WHERE id = :id");
+            $columns = $this->db->prepareColumns('environments', self::$envFetchFields);
+            $stmt = $connection->prepare("SELECT {$columns} FROM `{$prefix}environments` WHERE id = :id");
             $stmt->execute(['id' => $data['envId']]);
             $environment = $stmt->fetch(\PDO::FETCH_ASSOC);
 
@@ -115,7 +130,8 @@ class BranchController extends BaseController
         $prefix = $this->db->getPrefix();
 
         try {
-            $stmt = $connection->prepare("SELECT * FROM `{$prefix}environments` WHERE id = :id");
+            $columns = $this->db->prepareColumns('environments', self::$envDeployFields);
+            $stmt = $connection->prepare("SELECT {$columns} FROM `{$prefix}environments` WHERE id = :id");
             $stmt->execute(['id' => $data['envId']]);
             $environment = $stmt->fetch(\PDO::FETCH_ASSOC);
             $oldBranch = $environment['target_branch'];
@@ -142,10 +158,11 @@ class BranchController extends BaseController
     {
         $connection = $this->db->getConnection();
         $prefix = $this->db->getPrefix();
+        $this->db->verifyColumns('environments', ['target_branch']);
         $stmt = $connection->prepare("
             UPDATE {$prefix}environments 
-            SET target_branch = :branch 
-            WHERE id = :id
+            SET `target_branch` = :branch 
+            WHERE `id` = :id
         ");
 
         return $stmt->execute([

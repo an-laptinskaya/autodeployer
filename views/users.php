@@ -3,23 +3,23 @@
 <head>
     <meta charset="UTF-8">
     <title>Управление пользователями</title>
-    <link rel="stylesheet" href="<?= BASE_URL ?>assets/css/style.css">
+    <link rel="stylesheet" href="<?php echo BASE_URL; ?>assets/css/style.css">
 </head>
 <body>
 
 <div class="nav-bar">
     <div class="nav-links">
         <span style="font-size: 18px; font-weight: bold; color: #fff; margin-right: 20px;">AutoDeployer</span>
-        <a href="<?= BASE_URL ?>?page=branches">Площадки</a>
+        <a href="<?php echo BASE_URL; ?>?page=branches">Площадки</a>
         <?php if (!empty($_SESSION['is_admin'])): ?>
-            <a href="<?= BASE_URL ?>?page=users" class="active">Пользователи</a>
-            <a href="<?= BASE_URL ?>?page=environments">Настройки площадок</a>
-            <a href="<?= BASE_URL ?>?page=webhook">Настройки Webhook</a>
+            <a href="<?php echo BASE_URL; ?>?page=users" class="active">Пользователи</a>
+            <a href="<?php echo BASE_URL; ?>?page=environments">Настройки площадок</a>
+            <a href="<?php echo BASE_URL; ?>?page=webhook">Настройки Webhook</a>
         <?php endif; ?>
     </div>
     <div>
-        <?= htmlspecialchars($_SESSION['username']) ?>
-        <a href="<?= BASE_URL ?>?page=logout" style="color: #ffcccc; margin-left: 15px; text-decoration: none;">Выйти</a>
+        <?php echo htmlspecialchars($_SESSION['username']); ?>
+        <a href="<?php echo BASE_URL; ?>?page=logout" style="color: #ffcccc; margin-left: 15px; text-decoration: none;">Выйти</a>
     </div>
 </div>
 
@@ -68,8 +68,8 @@
             </tr>
             <?php foreach ($users as $u): ?>
                 <tr>
-                    <td><?= $u['id'] ?></td>
-                    <td style="font-weight: bold;"><?= htmlspecialchars($u['login']) ?></td>
+                    <td><?php echo $u['id']; ?></td>
+                    <td style="font-weight: bold;"><?php echo htmlspecialchars($u['login']); ?></td>
                     <td>
                         <?php if ($u['is_admin']): ?>
                             <span style="color: green; font-weight: bold;">Администратор</span>
@@ -79,7 +79,7 @@
                     </td>
                     <td style="text-align: center;">
                         <?php if ($u['id'] !== $_SESSION['user_id']): ?>
-                            <button type="button" class="btn btn-delete" style="padding: 5px 10px; font-size: 12px;" onclick="deleteUser(<?= $u['id'] ?>, '<?= htmlspecialchars($u['login']) ?>')">Удалить</button>
+                            <button type="button" class="btn btn-delete" style="padding: 5px 10px; font-size: 12px;" onclick="deleteUser(<?php echo $u['id']; ?>, '<?php echo htmlspecialchars($u['login']); ?>')">Удалить</button>
                         <?php else: ?>
                             <span style="color: #ccc; font-size: 12px;">Это вы</span>
                         <?php endif; ?>
@@ -91,9 +91,9 @@
 </div>
 
 <script>
-    const BASE_URL = '<?= BASE_URL ?>';
+    const BASE_URL = '<?php echo BASE_URL; ?>';
 </script>
-<script src="<?= BASE_URL ?>assets/js/script.js"></script>
+<script src="<?php echo BASE_URL; ?>assets/js/script.js"></script>
 
 </body>
 </html>

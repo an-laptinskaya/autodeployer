@@ -33,6 +33,9 @@ abstract class BaseController
 
     protected function render(string $template, array $data = []): void
     {
+        if (!file_exists(ROOT_PATH . "views/{$template}.php")) {
+            die("Представления {$template} не существует");
+        }
         extract($data);
         require ROOT_PATH . "views/{$template}.php";
     }

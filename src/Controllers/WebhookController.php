@@ -6,6 +6,13 @@ use Autodeployer\Services\DeployRunner;
 
 class WebhookController extends BaseController
 {
+    private static $settingsFields = [
+        'setting_key',
+        'setting_value',
+    ];
+
+    private static $envFields = ['id', 'name'];
+
     public function index()
     {
         $this->requireAdmin();
@@ -21,6 +28,7 @@ class WebhookController extends BaseController
         try {
             $newToken = bin2hex(random_bytes(16));
 
+            $this->db->verifyColumns('settings', self::$settingsFields);
             $stmt = $connection->query("SELECT COUNT(*) FROM {$prefix}settings WHERE setting_key = 'webhook_token'");
 
             if ($stmt->fetchColumn() > 0) {
@@ -59,8 +67,13 @@ class WebhookController extends BaseController
         $connection = $this->db->getConnection();
         $prefix = $this->db->getPrefix();
 
-        $stmt = $connection->query("SELECT `setting_value` FROM `{$prefix}settings` WHERE setting_key = 'webhook_token'");
-        $webhookToken = $stmt->fetchColumn();
+        try {
+            $columns = $this->db->prepareColumns('settings', ['setting_value']);
+            $stmt = $connection->query("SELECT {$columns} FROM `{$prefix}settings` WHERE setting_key = 'webhook_token'");
+            $webhookToken = $stmt->fetchColumn();
+        } catch (\Exception $e) {
+            die("Ошибка: " . $e->getMessage());
+        }
         if ($webhookToken === false) {
             die("Токен вебхука не настроен в базе данных");
         }
@@ -136,8 +149,8 @@ class WebhookController extends BaseController
         }
 
         try {
-
-            $stmt = $connection->prepare("SELECT id, name FROM `{$prefix}environments` WHERE target_branch = :branch");
+            $columns = $this->db->prepareColumns('environments', self::$envFields);
+            $stmt = $connection->prepare("SELECT {$columns} FROM `{$prefix}environments` WHERE target_branch = :branch");
             $stmt->execute(['branch' => $branch]);
             $environments = $stmt->fetchAll(\PDO::FETCH_ASSOC);
 

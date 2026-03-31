@@ -11,6 +11,9 @@ class App
     public function __construct()
     {
         Session::start();
+        if (!file_exists(ROOT_PATH . 'config/config.php')) {
+            die("Файл config.php не существует");
+        }
         $this->config = require ROOT_PATH . 'config/config.php';
         $this->defineBaseUrl();
         $this->db = new Database($this->config);

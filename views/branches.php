@@ -3,46 +3,46 @@
 <head>
     <meta charset="UTF-8">
     <title>Управление деплоем</title>
-    <link rel="stylesheet" href="<?= BASE_URL ?>assets/css/style.css">
+    <link rel="stylesheet" href="<?php echo BASE_URL; ?>assets/css/style.css">
 </head>
 <body>
 
 <div class="nav-bar">
     <div class="nav-links">
         <span style="font-size: 18px; font-weight: bold; color: #fff; margin-right: 20px;">AutoDeployer</span>
-        <a href="<?= BASE_URL ?>?page=branches" class="active">Площадки</a>
+        <a href="<?php echo BASE_URL; ?>?page=branches" class="active">Площадки</a>
         <?php if (!empty($_SESSION['is_admin'])): ?>
-            <a href="<?= BASE_URL ?>?page=users">Пользователи</a>
-            <a href="<?= BASE_URL ?>?page=environments">Настройки площадок</a>
-            <a href="<?= BASE_URL ?>?page=webhook">Настройки Webhook</a>
+            <a href="<?php echo BASE_URL; ?>?page=users">Пользователи</a>
+            <a href="<?php echo BASE_URL; ?>?page=environments">Настройки площадок</a>
+            <a href="<?php echo BASE_URL; ?>?page=webhook">Настройки Webhook</a>
         <?php endif; ?>
     </div>
     <div>
-        <?= htmlspecialchars($_SESSION['username']) ?>
-        <a href="<?= BASE_URL ?>?page=logout" style="color: #ffcccc; margin-left: 15px; text-decoration: none;">Выйти</a>
+        <?php echo htmlspecialchars($_SESSION['username']); ?>
+        <a href="<?php echo BASE_URL; ?>?page=logout" style="color: #ffcccc; margin-left: 15px; text-decoration: none;">Выйти</a>
     </div>
 </div>
 
 <div class="card-container">
     <?php if (empty($resultEnvs)): ?>
-    <div class="card">
-        <div class="env-not-found">Площадки не найдены</div>
-    </div>
+        <div class="card">
+            <div class="env-not-found">Площадки не найдены</div>
+        </div>
     <?php endif; ?>
     <?php if (!empty($resultEnvs)): ?>
         <?php foreach ($resultEnvs as $env): ?>
             <div class="card">
                 <div class="card-header">
                     <div>
-                        <div class="card-header-name">Площадка: <?= htmlspecialchars($env['name']) ?></div>
-                        <div class="card-header-path"><b>Путь:</b> <?= htmlspecialchars($env['path']) ?></div>
+                        <div class="card-header-name">Площадка: <?php echo htmlspecialchars($env['name']); ?></div>
+                        <div class="card-header-path"><b>Путь:</b> <?php echo htmlspecialchars($env['path']); ?></div>
                     </div>
 
                     <div>
                         <button
-                            class="btn btn-primary"
-                            id="fetchBtn"
-                            onclick="refreshBranches(<?= $env['id'] ?>)"
+                                class="btn btn-primary"
+                                id="fetchBtn"
+                                onclick="refreshBranches(<?php echo $env['id']; ?>)"
                         >
                             Обновить ветки с сервера
                         </button>
@@ -56,12 +56,12 @@
                         $color = $alert['type'] === 'warning' ? '#856404' : '#721c24';
                         $border = $alert['type'] === 'warning' ? '#ffeeba' : '#f5c6cb';
                         ?>
-                        <div class="notifications" style="background: <?= $bg ?>; color: <?= $color ?>; border: 1px solid <?= $border ?>;">
+                        <div class="notifications" style="background: <?php echo $bg; ?>; color: <?php echo $color; ?>; border: 1px solid <?php echo $border; ?>;">
                             <div style="font-size: 16px; font-weight: bold; margin-bottom: 5px;">
-                                <?= $alert['title'] ?>
+                                <?php echo $alert['title']; ?>
                             </div>
                             <div style="font-size: 14px; line-height: 1.4;">
-                                <?= $alert['message'] ?>
+                                <?php echo $alert['message']; ?>
                             </div>
                         </div>
                     <?php endforeach; ?>
@@ -77,7 +77,7 @@
                         </div>
                         <?php foreach ($env['branches'] as $branch) : ?>
                             <div class="branch-row">
-                                <div class="branch-name"><?= $branch['name'] ?></div>
+                                <div class="branch-name"><?php echo $branch['name']; ?></div>
                                 <div class="commits">
                                     <?php if (!empty($branch['commits']) && is_array($branch['commits'])) :?>
                                         <?php foreach ($branch['commits'] as $commit) : ?>
@@ -90,15 +90,15 @@
                                             <div class="commit-item">
                                                 <?php if ($hash): ?>
                                                     <div class="commit-header">
-                                                        <span class="commit-hash"><?= $hash ?></span>
-                                                        <span class="commit-author"><?= htmlspecialchars($author) ?></span>
-                                                        <span class="commit-time"><?= $time ?></span>
+                                                        <span class="commit-hash"><?php echo $hash; ?></span>
+                                                        <span class="commit-author"><?php echo htmlspecialchars($author); ?></span>
+                                                        <span class="commit-time"><?php echo $time; ?></span>
                                                     </div>
-                                                    <div class="commit-msg" title="<?= htmlspecialchars($msg) ?>">
-                                                        <?= htmlspecialchars($msg) ?>
+                                                    <div class="commit-msg" title="<?php echo htmlspecialchars($msg); ?>">
+                                                        <?php echo htmlspecialchars($msg); ?>
                                                     </div>
                                                 <?php else: ?>
-                                                    <div class="commit-msg"><?= htmlspecialchars($msg) ?></div>
+                                                    <div class="commit-msg"><?php echo htmlspecialchars($msg); ?></div>
                                                 <?php endif; ?>
                                             </div>
                                         <?php endforeach ; ?>
@@ -106,12 +106,12 @@
                                         <div style="color: #999; font-size: 13px; font-style: italic;">Нет коммитов</div>
                                     <?php endif ;?>
                                 </div>
-                                <div class="is-current-branch <?= $branch['isCurrentBranch'] ? 'current' : '' ?>"><?= $branch['isCurrentBranch'] ? 'Да' : 'Нет' ?></div>
+                                <div class="is-current-branch <?php echo $branch['isCurrentBranch'] ? 'current' : ''; ?>"><?php echo $branch['isCurrentBranch'] ? 'Да' : 'Нет'; ?></div>
                                 <div>
                                     <button
-                                        class="btn btn-primary"
-                                        type="button"
-                                        onclick="openSettingsModal(<?= $env['id'] ?>, '<?= $branch['name'] ?>')"
+                                            class="btn btn-primary"
+                                            type="button"
+                                            onclick="openSettingsModal(<?php echo $env['id']; ?>, '<?php echo $branch['name']; ?>')"
                                     >
                                         Развернуть
                                     </button>
@@ -166,9 +166,9 @@
 </div>
 
 <script>
-    const BASE_URL = '<?= BASE_URL ?>';
+    const BASE_URL = '<?php echo BASE_URL; ?>';
 </script>
-<script src="<?= BASE_URL ?>assets/js/script.js"></script>
+<script src="<?php echo BASE_URL; ?>assets/js/script.js"></script>
 
 </body>
 </html>

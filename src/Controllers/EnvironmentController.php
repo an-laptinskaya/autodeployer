@@ -4,14 +4,28 @@ namespace Autodeployer\Controllers;
 
 class EnvironmentController extends BaseController
 {
+    private static $envFields = [
+        'id',
+        'name',
+        'path',
+        'target_branch',
+        'build_command',
+        'build_triggers'
+    ];
+
     public function index()
     {
         $this->requireAdmin();
         $connection = $this->db->getConnection();
         $prefix = $this->db->getPrefix();
 
-        $stmt = $connection->query("SELECT * FROM {$prefix}environments ORDER BY id ASC");
-        $environments = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+        try {
+            $columns = $this->db->prepareColumns('environments', self::$envFields);
+            $stmt = $connection->query("SELECT {$columns} FROM {$prefix}environments ORDER BY id ASC");
+            $environments = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+        } catch (\Exception $e) {
+            die("Ошибка: " . $e->getMessage());
+        }
 
         $this->render('environments', [
             'environments' => $environments,
@@ -44,7 +58,9 @@ class EnvironmentController extends BaseController
                 exit;
             }
 
-            $stmt = $connection->prepare("INSERT INTO {$prefix}environments (name, path, target_branch, build_command, build_triggers) VALUES (?, ?, ?, ?, ?)");
+            $this->db->verifyColumns('environments', self::$envFields);
+            $stmt = $connection->prepare("INSERT INTO {$prefix}environments (name, path, target_branch, build_command, build_triggers) 
+                                                VALUES (?, ?, ?, ?, ?)");
             $stmt->execute([$name, $path, $branch, $command, $triggers]);
 
             echo json_encode(['success' => true, 'message' => 'Площадка успешно добавлена.']);
@@ -81,6 +97,7 @@ class EnvironmentController extends BaseController
                 exit;
             }
 
+            $this->db->verifyColumns('environments', self::$envFields);
             $stmt = $connection->prepare("UPDATE {$prefix}environments SET name=?, path=?, target_branch=?, build_command=?, build_triggers=? WHERE id=?");
             $stmt->execute([$name, $path, $branch, $command, $triggers, $id]);
 

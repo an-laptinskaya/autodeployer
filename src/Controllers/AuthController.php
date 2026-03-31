@@ -6,6 +6,13 @@ use Autodeployer\Core\Session;
 
 class AuthController extends BaseController
 {
+    private static array $authFields = [
+        'id',
+        'login',
+        'password_hash',
+        'is_admin'
+    ];
+
     public function index()
     {
         if (Session::isLoggedIn()) {
@@ -31,23 +38,28 @@ class AuthController extends BaseController
         $connection = $this->db->getConnection();
         $prefix = $this->db->getPrefix();
 
-        $stmt = $connection->prepare("SELECT * FROM {$prefix}users WHERE login = :login");
-        $stmt->execute(['login' => $username]);
-        $user = $stmt->fetch(\PDO::FETCH_ASSOC);
+        try {
+            $columns = $this->db->prepareColumns('users', self::$authFields);
+            $stmt = $connection->prepare("SELECT {$columns} FROM {$prefix}users WHERE login = :login");
+            $stmt->execute(['login' => $username]);
+            $user = $stmt->fetch(\PDO::FETCH_ASSOC);
 
-        if ($user && password_verify($password, $user['password_hash'])) {
+            if ($user && password_verify($password, $user['password_hash'])) {
+                $_SESSION['user_id']   = $user['id'];
+                $_SESSION['username']  = $user['login'];
+                $_SESSION['is_admin'] = (bool) $user['is_admin'];
+                $_SESSION['logged_in'] = true;
 
-            $_SESSION['user_id']   = $user['id'];
-            $_SESSION['username']  = $user['login'];
-            $_SESSION['is_admin'] = (bool) $user['is_admin'];
-            $_SESSION['logged_in'] = true;
+                session_regenerate_id(true);
 
-            session_regenerate_id(true);
-
-            echo json_encode(['success' => true]);
-            exit;
-        } else {
-            echo json_encode(['success' => false, 'error' => 'Неверный логин или пароль']);
+                echo json_encode(['success' => true]);
+                exit;
+            } else {
+                echo json_encode(['success' => false, 'error' => 'Неверный логин или пароль']);
+                exit;
+            }
+        } catch (\Exception $e) {
+            echo json_encode(['success' => false, 'error' => $e->getMessage()]);
             exit;
         }
     }

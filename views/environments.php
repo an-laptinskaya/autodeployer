@@ -3,23 +3,23 @@
 <head>
     <meta charset="UTF-8">
     <title>Управление площадками</title>
-    <link rel="stylesheet" href="<?= BASE_URL ?>assets/css/style.css">
+    <link rel="stylesheet" href="<?php echo BASE_URL; ?>assets/css/style.css">
 </head>
 <body>
 
 <div class="nav-bar">
     <div class="nav-links">
         <span style="font-size: 18px; font-weight: bold; color: #fff; margin-right: 20px;">AutoDeployer</span>
-        <a href="<?= BASE_URL ?>?page=branches">Площадки</a>
+        <a href="<?php echo BASE_URL; ?>?page=branches">Площадки</a>
         <?php if (!empty($_SESSION['is_admin'])): ?>
-            <a href="<?= BASE_URL ?>?page=users">Пользователи</a>
-            <a href="<?= BASE_URL ?>?page=environments" class="active">Настройки площадок</a>
-            <a href="<?= BASE_URL ?>?page=webhook">Настройки Webhook</a>
+            <a href="<?php echo BASE_URL; ?>?page=users">Пользователи</a>
+            <a href="<?php echo BASE_URL; ?>?page=environments" class="active">Настройки площадок</a>
+            <a href="<?php echo BASE_URL; ?>?page=webhook">Настройки Webhook</a>
         <?php endif; ?>
     </div>
     <div>
-        <?= htmlspecialchars($_SESSION['username']) ?>
-        <a href="<?= BASE_URL ?>?page=logout" style="color: #ffcccc; margin-left: 15px; text-decoration: none;">Выйти</a>
+        <?php echo htmlspecialchars($_SESSION['username']); ?>
+        <a href="<?php echo BASE_URL; ?>?page=logout" style="color: #ffcccc; margin-left: 15px; text-decoration: none;">Выйти</a>
     </div>
 </div>
 
@@ -68,21 +68,21 @@
             </tr>
             <?php foreach ($environments as $env): ?>
                 <tr>
-                    <td><?= $env['id'] ?></td>
-                    <td class="cell-name"><?= htmlspecialchars($env['name']) ?></td>
-                    <td class="cell-path"><?= htmlspecialchars($env['path']) ?></td>
-                    <td><span class="badge-branch"><?= htmlspecialchars($env['target_branch']) ?></span></td>
+                    <td><?php echo $env['id']; ?></td>
+                    <td class="cell-name"><?php echo htmlspecialchars($env['name']); ?></td>
+                    <td class="cell-path"><?php echo htmlspecialchars($env['path']); ?></td>
+                    <td><span class="badge-branch"><?php echo htmlspecialchars($env['target_branch']); ?></span></td>
                     <td>
                         <?php if ($env['build_command']): ?>
-                            <div class="build-cmd"><?= htmlspecialchars($env['build_command']) ?></div>
-                            <div class="build-triggers">Триггеры: <?= htmlspecialchars($env['build_triggers'] ?: 'Все файлы') ?></div>
+                            <div class="build-cmd"><?php echo htmlspecialchars($env['build_command']); ?></div>
+                            <div class="build-triggers">Триггеры: <?php echo htmlspecialchars($env['build_triggers'] ?: 'Все файлы'); ?></div>
                         <?php else: ?>
                             <span class="text-empty">Нет</span>
                         <?php endif; ?>
                     </td>
                     <td class="cell-actions">
-                        <button class="btn btn-change btn-sm" onclick='openEditModal(<?= json_encode($env, JSON_HEX_APOS | JSON_HEX_QUOT) ?>)'>Изменить</button>
-                        <button class="btn btn-delete btn-sm" onclick="deleteEnv(<?= $env['id'] ?>, '<?= htmlspecialchars($env['name'], ENT_QUOTES) ?>')">Удалить</button>
+                        <button class="btn btn-change btn-sm" onclick='openEditModal(<?php echo json_encode($env, JSON_HEX_APOS | JSON_HEX_QUOT); ?>)'>Изменить</button>
+                        <button class="btn btn-delete btn-sm" onclick="deleteEnv(<?php echo $env['id']; ?>, '<?php echo htmlspecialchars($env['name'], ENT_QUOTES); ?>')">Удалить</button>
                     </td>
                 </tr>
             <?php endforeach; ?>
@@ -125,9 +125,9 @@
 </div>
 
 <script>
-    const BASE_URL = '<?= BASE_URL ?>';
+    const BASE_URL = '<?php echo BASE_URL; ?>';
 </script>
-<script src="<?= BASE_URL ?>assets/js/script.js"></script>
+<script src="<?php echo BASE_URL; ?>assets/js/script.js"></script>
 
 </body>
 </html>

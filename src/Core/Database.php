@@ -37,4 +37,43 @@ class Database
     {
         return $this->prefix;
     }
+
+    public function verifyColumns(string $table, array $columns)
+    {
+        if ($columns === ['*'] || empty($columns)) {
+            return '*';
+        }
+
+        $tableWithPrefix = $this->prefix . $table;
+
+        $stmt = $this->pdo->query("SHOW COLUMNS FROM `{$tableWithPrefix}`");
+        $tableColumns = $stmt->fetchAll(\PDO::FETCH_COLUMN);
+
+        foreach ($columns as $col) {
+            if (!in_array($col, $tableColumns, true)) {
+                throw new \Exception("Колонка {$col} не найдена в таблице {$tableWithPrefix}");
+            }
+        }
+    }
+
+    public function formatColumns(array $columns): string
+    {
+        if ($columns === ['*'] || empty($columns)) {
+            return '*';
+        }
+
+        $formatted = [];
+        foreach ($columns as $col) {
+            $formatted[] = "`{$col}`";
+        }
+
+        return implode(', ', $formatted);
+    }
+
+    public function prepareColumns(string $table, array $columns)
+    {
+        $this->verifyColumns($table, $columns);
+        return $this->formatColumns($columns);
+    }
+
 }

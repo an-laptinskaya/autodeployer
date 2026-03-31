@@ -7,6 +7,14 @@ use Autodeployer\Core\Database;
 class DeployRunner
 {
     private Database $db;
+    private static $envFields = [
+        'id',
+        'name',
+        'path',
+        'target_branch',
+        'build_command',
+        'build_triggers'
+    ];
 
     private string $logPath = ROOT_PATH . 'logs/';
 
@@ -24,7 +32,8 @@ class DeployRunner
         $log = [];
         $dbPrefix = $this->db->getPrefix();
 
-        $stmt = $this->db->getConnection()->prepare("SELECT * FROM `{$dbPrefix}environments` WHERE id = :id");
+        $columns = $this->db->prepareColumns('environments', self::$envFields);
+        $stmt = $this->db->getConnection()->prepare("SELECT {$columns} FROM `{$dbPrefix}environments` WHERE id = :id");
         $stmt->execute(['id' => $envId]);
         $environment = $stmt->fetch(\PDO::FETCH_ASSOC);
 

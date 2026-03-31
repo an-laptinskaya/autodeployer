@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <title>Вход — AutoDeployer</title>
-    <link rel="stylesheet" href="<?= BASE_URL ?>assets/css/style.css">
+    <link rel="stylesheet" href="<?php echo BASE_URL; ?>assets/css/style.css">
 </head>
 <body class="login-body">
 
@@ -31,9 +31,9 @@
 </div>
 
 <script>
-    const BASE_URL = '<?= BASE_URL ?>';
+    const BASE_URL = '<?php echo BASE_URL; ?>';
 </script>
-<script src="<?= BASE_URL ?>assets/js/script.js"></script>
+<script src="<?php echo BASE_URL; ?>assets/js/script.js"></script>
 
 </body>
 </html>

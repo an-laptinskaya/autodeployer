@@ -4,6 +4,13 @@ namespace Autodeployer\Controllers;
 
 class InstallController extends BaseController
 {
+    private static $userFields = [
+        'id',
+        'login',
+        'password_hash',
+        'is_admin'
+    ];
+
     public function run()
     {
         if (file_exists(ROOT_PATH . 'config/installed.lock')) {
@@ -44,15 +51,17 @@ class InstallController extends BaseController
             $stmt = $connection->query("SELECT COUNT(*) FROM {$prefix}users");
             if ($stmt->fetchColumn() == 0) {
                 $hash = password_hash('autodeployer', PASSWORD_DEFAULT);
+                $this->db->verifyColumns('users', self::$userFields);
                 $connection->exec("
-                    INSERT INTO {$prefix}users (login, password_hash, is_admin) 
+                    INSERT INTO {$prefix}users (`login`, `password_hash`, `is_admin`) 
                     VALUES ('autodeployer', '$hash', 1)
                 ");
             }
 
             file_put_contents(ROOT_PATH . 'config/installed.lock', 'Установлено: ' . date('Y-m-d H:i:s'));
 
-            $stmt = $connection->query("SELECT id FROM {$prefix}users WHERE login = 'autodeployer'");
+            $columns = $this->db->prepareColumns('users', ['id']);
+            $stmt = $connection->query("SELECT {$columns} FROM {$prefix}users WHERE login = 'autodeployer'");
             $adminId = $stmt->fetchColumn();
 
             $_SESSION['user_id']   = $adminId;
